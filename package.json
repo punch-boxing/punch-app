@@ -10,9 +10,16 @@
     "test": "jest"
   },
   "dependencies": {
+    "@tensorflow/tfjs": "^4.22.0",
+    "@tensorflow/tfjs-react-native": "^1.0.0",
+    "async-storage": "^0.1.0",
+    "expo-camera": "^16.1.10",
+    "expo-gl": "^15.1.7",
     "react": "19.0.0",
     "react-native": "0.79.1",
+    "react-native-fs": "^2.20.0",
     "react-native-sensors": "^7.3.6",
+    "react-native-unimodules": "^0.14.10",
     "react-native-volume-manager": "^2.0.8"
   },
   "devDependencies": {

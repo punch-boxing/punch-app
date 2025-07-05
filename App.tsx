@@ -1,4 +1,5 @@
 import {
+  useEffect,
   useReducer,
   useRef,
   useState,
@@ -12,8 +13,8 @@ import {
 } from 'react-native';
 import { Subscription } from 'rxjs';
 import { accelerometer, gyroscope, setUpdateIntervalForType, SensorTypes } from 'react-native-sensors';
-// import * as tf from '@tensorflow/tfjs';
-// import { bundleResourceIO } from '@tensorflow/tfjs-react-native';
+import * as tf from '@tensorflow/tfjs';
+import { bundleResourceIO } from '@tensorflow/tfjs-react-native';
 
 import { Vector3D } from './src/utils/vector';
 import { autoCalibrate, initializeOrientaion } from './src/utils/math';
@@ -25,10 +26,23 @@ function App() {
 
   const data = useRef<string>('index,time,acc x,acc y,acc z,sin ori x,sin ori y,sin ori z,user input\n');
   const [subscription, setSubscription] = useState<Subscription | null>(null);
-  // const [punchDetector, setPunchDetector] = useState<tf.LayersModel | null>(null);
+  const [punchDetector, setPunchDetector] = useState<tf.LayersModel | null>(null);
   const orientationInitialized = useRef<boolean>(false);
   const acceleration = useRef<Vector3D>(new Vector3D(0, 0, 0));
   const orientation = useRef<Vector3D>(new Vector3D(0, 0, 0));
+
+  useEffect(() => {
+    const loadModel = async () => {
+      await tf.ready();
+      const modelJson = require('./assets/models/gru5d/model.json');
+      const modelWeights = require('./assets/models/gru5d/weight.bin');
+      const model = await tf.loadLayersModel(bundleResourceIO(modelJson, modelWeights));
+      setPunchDetector(model);
+    };
+    loadModel().catch(err => {
+      console.error('Failed to load model:', err);
+    });
+  }, []);
 
   const startSensor = () => {
     if (!subscription) {

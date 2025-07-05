@@ -1,4 +1,7 @@
 {
   "name": "punch",
-  "displayName": "punch"
+  "displayName": "punch",
+  "packagerOpts": {
+    "config": "metro.config.js"
+  }
 }
