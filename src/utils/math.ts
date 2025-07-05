@@ -34,20 +34,6 @@ const integrateGyro = (
   );
 };
 
-const radiansToDegrees = (radians: number): number => {
-  return radians * (180 / Math.PI);
-};
-
-const normalizeAngle = (angle: number): number => {
-  while (angle < -Math.PI) {
-    angle += 2 * Math.PI;
-  }
-  while (angle > Math.PI) {
-    angle -= 2 * Math.PI;
-  }
-  return angle;
-};
-
 const autoCalibrate = (
   acceleration: Vector3D,
   gyro: Vector3D,
@@ -78,10 +64,4 @@ const autoCalibrate = (
 };
 
 export type {Vector3D};
-export {
-  autoCalibrate,
-  initializeOrientaion,
-  calculateGravity,
-  integrateGyro,
-  radiansToDegrees,
-};
+export {autoCalibrate, initializeOrientaion, calculateGravity, integrateGyro};

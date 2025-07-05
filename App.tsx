@@ -11,7 +11,6 @@ import {
   Vibration,
 } from 'react-native';
 import { Subscription } from 'rxjs';
-import { VolumeManager } from 'react-native-volume-manager';
 import { accelerometer, gyroscope, setUpdateIntervalForType, SensorTypes } from 'react-native-sensors';
 // import * as tf from '@tensorflow/tfjs';
 // import { bundleResourceIO } from '@tensorflow/tfjs-react-native';
@@ -28,47 +27,22 @@ function App() {
   const [subscription, setSubscription] = useState<Subscription | null>(null);
   // const [punchDetector, setPunchDetector] = useState<tf.LayersModel | null>(null);
   const orientationInitialized = useRef<boolean>(false);
-
   const acceleration = useRef<Vector3D>(new Vector3D(0, 0, 0));
   const orientation = useRef<Vector3D>(new Vector3D(0, 0, 0));
 
-  const volumeListener = useRef<ReturnType<typeof VolumeManager.addVolumeListener> | null>(null);
-
-  // try {
-  //   const model = await require('./assets/models/gru-6d/model.json');
-  //   console.log('Model loaded successfully:', model);
-  //   const weight = await require('./assets/models/gru-6d/weight.bin');
-  //   console.log('Weights loaded successfully:', weight);
-  //   setPunchDetector(await tf.loadLayersModel(bundleResourceIO(model, weight)));
-  // } catch (error) {
-  //   console.error('Error loading model:', error);
-  // }
-
   const startSensor = () => {
     if (!subscription) {
-      let index = 0;
-      let startTime: number | null = null;
       let _gyro: Vector3D = new Vector3D(0, 0, 0);
-      let currentVolume = 0;
 
       setUpdateIntervalForType(SensorTypes.gyroscope, timeInterval);
       setUpdateIntervalForType(SensorTypes.accelerometer, timeInterval);
-
-      let volumeChanged = 0;
-
-      volumeListener.current = VolumeManager.addVolumeListener((result) => {
-        if (currentVolume !== result.volume) {
-          volumeChanged = 1;
-        }
-        currentVolume = result.volume;
-      });
 
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const gyroSubscription = gyroscope.subscribe(({ x, y, z }) => {
         _gyro = new Vector3D(x, 0, z);
       });
 
-      const accelSubscription = accelerometer.subscribe(({ x, y, z, timestamp }) => {
+      const accelSubscription = accelerometer.subscribe(({ x, y, z }) => {
         if (!orientationInitialized.current) {
           orientation.current = initializeOrientaion(new Vector3D(x, y, z));
           acceleration.current = new Vector3D(x, y, z);
@@ -85,13 +59,6 @@ function App() {
           // });
         }
 
-        if (startTime === null) {
-          startTime = timestamp;
-        }
-        const elapsedTime = (timestamp - startTime) / 1000;
-        data.current += `${index},${elapsedTime},${x},${y},${z},${Math.sin(orientation.current.x)},${Math.sin(orientation.current.y)},${Math.sin(orientation.current.z)},${volumeChanged}\n`;
-        volumeChanged = 0;
-        index++;
         forceUpdate();
       });
 
@@ -108,7 +75,6 @@ function App() {
       orientationInitialized.current = false;
       setSubscription(null);
     }
-    volumeListener.current?.remove();
   };
 
   return (
