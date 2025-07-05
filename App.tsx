@@ -56,21 +56,28 @@ function App() {
         _gyro = new Vector3D(x, 0, z);
       });
 
-      const accelSubscription = accelerometer.subscribe(({ x, y, z }) => {
+      const accelSubscription = accelerometer.subscribe(async ({ x, y, z }) => {
         if (!orientationInitialized.current) {
           orientation.current = initializeOrientaion(new Vector3D(x, y, z));
           acceleration.current = new Vector3D(x, y, z);
           orientationInitialized.current = true;
-          // punchDetector?.predict([acceleration.current.x, acceleration.current.y, acceleration.current.z, orientation.current.x, orientation.current.y, orientation.current.z]);
+          const inputTensor = tf.tensor2d([[acceleration.current.x, acceleration.current.y, acceleration.current.z, orientation.current.x, orientation.current.y, orientation.current.z]]);
+          punchDetector?.predict(inputTensor);
+          inputTensor.dispose();
         } else {
           let result = autoCalibrate(new Vector3D(x, y, z), _gyro, orientation.current, timeInterval);
           orientation.current = result.orientation;
           acceleration.current = result.acceleration;
-          // punchDetector?.predict([acceleration.current.x, acceleration.current.y, acceleration.current.z, orientation.current.x, orientation.current.y, orientation.current.z]).then((prediction) => {
-          //   if (prediction[0] > 0.5) {
-          //     Vibration.vibrate(100);
-          //   }
-          // });
+          const inputTensor = tf.tensor2d([[acceleration.current.x, acceleration.current.y, acceleration.current.z, orientation.current.x, orientation.current.y, orientation.current.z]]);
+          const prediction = punchDetector?.predict(inputTensor) as tf.Tensor;
+          if (prediction) {
+            const predictionData = await prediction.data();
+            if (predictionData !== null && predictionData[0] > 0.5) {
+              Vibration.vibrate(100);
+            }
+            prediction.dispose();
+          }
+          inputTensor.dispose();
         }
 
         forceUpdate();
