@@ -29,13 +29,23 @@ const integrateGyro = (
 ): Vector3D => {
   return new Vector3D(
     orientation.x + (gyro.x * dt) / 1000,
-    orientation.y + (gyro.y * dt) / 1000,
+    0,
     orientation.z + (gyro.z * dt) / 1000,
   );
 };
 
 const radiansToDegrees = (radians: number): number => {
   return radians * (180 / Math.PI);
+};
+
+const normalizeAngle = (angle: number): number => {
+  while (angle < -Math.PI) {
+    angle += 2 * Math.PI;
+  }
+  while (angle > Math.PI) {
+    angle -= 2 * Math.PI;
+  }
+  return angle;
 };
 
 const autoCalibrate = (
@@ -54,7 +64,7 @@ const autoCalibrate = (
     let _acceleration = acceleration.normalize();
     orientation = new Vector3D(
       -Math.PI - Math.atan2(_acceleration.z, _acceleration.y),
-      orientation.y + (gyro.y * dt) / 1000,
+      0,
       -Math.asin(_acceleration.x),
     );
   } else {

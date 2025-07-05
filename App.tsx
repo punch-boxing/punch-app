@@ -63,8 +63,9 @@ function App() {
         currentVolume = result.volume;
       });
 
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const gyroSubscription = gyroscope.subscribe(({ x, y, z }) => {
-        _gyro = new Vector3D(x, y, z);
+        _gyro = new Vector3D(x, 0, z);
       });
 
       const accelSubscription = accelerometer.subscribe(({ x, y, z, timestamp }) => {
