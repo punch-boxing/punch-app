@@ -1,21 +1,14 @@
 {
   "format": "layers-model",
-  "generatedBy": "keras v3.8.0",
+  "generatedBy": "keras v2.18.0",
   "convertedBy": "TensorFlow.js Converter v4.22.0",
   "modelTopology": {
-    "keras_version": "3.8.0",
+    "keras_version": "2.18.0",
     "backend": "tensorflow",
     "model_config": {
       "class_name": "Sequential",
       "config": {
-        "name": "sequential_3",
-        "trainable": true,
-        "dtype": {
-          "module": "keras",
-          "class_name": "DTypePolicy",
-          "config": {"name": "float32"},
-          "registered_name": null
-        },
+        "name": "sequential",
         "layers": [
           {
             "class_name": "InputLayer",
@@ -23,26 +16,23 @@
               "batch_input_shape": [null, null, 5],
               "dtype": "float32",
               "sparse": false,
-              "name": "input_layer_3"
+              "ragged": false,
+              "name": "gru_input"
             }
           },
           {
             "class_name": "GRU",
             "config": {
-              "name": "gru_3",
+              "name": "gru",
               "trainable": true,
-              "dtype": {
-                "module": "keras",
-                "class_name": "DTypePolicy",
-                "config": {"name": "float32"},
-                "registered_name": null
-              },
+              "dtype": "float32",
+              "batch_input_shape": [null, null, 5],
               "return_sequences": false,
               "return_state": false,
               "go_backwards": false,
               "stateful": false,
               "unroll": false,
-              "zero_output_for_mask": false,
+              "time_major": false,
               "units": 8,
               "activation": "tanh",
               "recurrent_activation": "sigmoid",
@@ -50,13 +40,13 @@
               "kernel_initializer": {
                 "module": "keras.initializers",
                 "class_name": "GlorotUniform",
-                "config": {"seed": null},
+                "config": { "seed": null },
                 "registered_name": null
               },
               "recurrent_initializer": {
                 "module": "keras.initializers",
                 "class_name": "Orthogonal",
-                "config": {"seed": null, "gain": 1.0},
+                "config": { "gain": 1.0, "seed": null },
                 "registered_name": null
               },
               "bias_initializer": {
@@ -74,7 +64,7 @@
               "bias_constraint": null,
               "dropout": 0.0,
               "recurrent_dropout": 0.0,
-              "seed": null
+              "implementation": 2
             }
           },
           {
@@ -82,19 +72,14 @@
             "config": {
               "name": "dense",
               "trainable": true,
-              "dtype": {
-                "module": "keras",
-                "class_name": "DTypePolicy",
-                "config": {"name": "float32"},
-                "registered_name": null
-              },
+              "dtype": "float32",
               "units": 5,
               "activation": "softmax",
               "use_bias": true,
               "kernel_initializer": {
                 "module": "keras.initializers",
                 "class_name": "GlorotUniform",
-                "config": {"seed": null},
+                "config": { "seed": null },
                 "registered_name": null
               },
               "bias_initializer": {
@@ -105,27 +90,34 @@
               },
               "kernel_regularizer": null,
               "bias_regularizer": null,
+              "activity_regularizer": null,
               "kernel_constraint": null,
               "bias_constraint": null
             }
           }
-        ],
-        "build_input_shape": [null, null, 5]
+        ]
       }
     },
     "training_config": {
       "loss": "sparse_categorical_crossentropy",
-      "loss_weights": null,
-      "metrics": ["accuracy"],
+      "metrics": [
+        [
+          {
+            "class_name": "MeanMetricWrapper",
+            "config": {
+              "name": "accuracy",
+              "dtype": "float32",
+              "fn": "sparse_categorical_accuracy"
+            }
+          }
+        ]
+      ],
       "weighted_metrics": null,
-      "run_eagerly": false,
-      "steps_per_execution": 1,
-      "jit_compile": false,
+      "loss_weights": null,
       "optimizer_config": {
-        "class_name": "Adam",
+        "class_name": "Custom>Adam",
         "config": {
-          "name": "adam",
-          "learning_rate": 0.0010000000474974513,
+          "name": "Adam",
           "weight_decay": null,
           "clipnorm": null,
           "global_clipnorm": null,
@@ -133,8 +125,9 @@
           "use_ema": false,
           "ema_momentum": 0.99,
           "ema_overwrite_frequency": null,
-          "loss_scale_factor": null,
-          "gradient_accumulation_steps": null,
+          "jit_compile": false,
+          "is_legacy_optimizer": false,
+          "learning_rate": 0.0010000000474974513,
           "beta_1": 0.9,
           "beta_2": 0.999,
           "epsilon": 1e-7,
@@ -147,27 +140,15 @@
     {
       "paths": ["group1-shard1of1.bin"],
       "weights": [
+        { "name": "dense/kernel", "shape": [8, 5], "dtype": "float32" },
+        { "name": "dense/bias", "shape": [5], "dtype": "float32" },
+        { "name": "gru/gru_cell/kernel", "shape": [5, 24], "dtype": "float32" },
         {
-          "name": "sequential_3/dense_3/kernel",
-          "shape": [8, 5],
-          "dtype": "float32"
-        },
-        {"name": "sequential_3/dense_3/bias", "shape": [5], "dtype": "float32"},
-        {
-          "name": "sequential_3/gru_3/gru_cell/kernel",
-          "shape": [5, 24],
-          "dtype": "float32"
-        },
-        {
-          "name": "sequential_3/gru_3/gru_cell/recurrent_kernel",
+          "name": "gru/gru_cell/recurrent_kernel",
           "shape": [8, 24],
           "dtype": "float32"
         },
-        {
-          "name": "sequential_3/gru_3/gru_cell/bias",
-          "shape": [2, 24],
-          "dtype": "float32"
-        }
+        { "name": "gru/gru_cell/bias", "shape": [24], "dtype": "float32" }
       ]
     }
   ]

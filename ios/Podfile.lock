@@ -1662,6 +1662,11 @@ PODS:
     - React-Core
   - RNSensors (7.3.6):
     - React-Core
+  - RNSound (0.11.2):
+    - React-Core
+    - RNSound/Core (= 0.11.2)
+  - RNSound/Core (0.11.2):
+    - React-Core
   - SocketRocket (0.7.1)
   - Yoga (0.0.0)
 
@@ -1740,6 +1745,7 @@ DEPENDENCIES:
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - RNFS (from `../node_modules/react-native-fs`)
   - RNSensors (from `../node_modules/react-native-sensors`)
+  - RNSound (from `../node_modules/react-native-sound`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
@@ -1893,6 +1899,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-fs"
   RNSensors:
     :path: "../node_modules/react-native-sensors"
+  RNSound:
+    :path: "../node_modules/react-native-sound"
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
@@ -1970,6 +1978,7 @@ SPEC CHECKSUMS:
   ReactCommon: 9f975582dc535de1de110bdb46d4553140a77541
   RNFS: 4ac0f0ea233904cb798630b3c077808c06931688
   RNSensors: 117ba71c7eeeea0407ea0c0bb79e3495d602049b
+  RNSound: 6c156f925295bdc83e8e422e7d8b38d33bc71852
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
   Yoga: d15f5aa644c466e917569ac43b19cbf17975239a
 
